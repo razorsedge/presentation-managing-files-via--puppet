@@ -4,3 +4,6 @@
 [submodule "inifile"]
 	path = inifile
 	url = https://github.com/puppetlabs/puppetlabs-inifile.git
+[submodule "concat"]
+	path = concat
+	url = https://github.com/puppetlabs/puppetlabs-concat.git
