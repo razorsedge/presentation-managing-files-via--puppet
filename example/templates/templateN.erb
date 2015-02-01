@@ -1,0 +1,8 @@
+# templateN.erb
+# Nagios Hostgroups
+<% @data.keys.sort.each do |hostgroup| %>
+define hostgroup {
+    name <%= hostgroup %>
+    members <%= @data[hostgroup].join(',') %>
+}
+<% end %>
