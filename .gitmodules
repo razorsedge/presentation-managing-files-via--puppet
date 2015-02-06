@@ -19,3 +19,6 @@
 [submodule "apache"]
 	path = apache
 	url = https://github.com/puppetlabs/puppetlabs-apache.git
+[submodule "augeasproviders_core"]
+	path = augeasproviders_core
+	url = https://github.com/hercules-team/augeasproviders_core.git
