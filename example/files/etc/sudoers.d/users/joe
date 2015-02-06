@@ -1,0 +1,1 @@
+joe ALL=/sbin/mount /mnt/cdrom, /sbin/umount /mnt/cdrom
