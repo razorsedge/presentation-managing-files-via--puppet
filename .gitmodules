@@ -13,3 +13,6 @@
 [submodule "datacat"]
 	path = datacat
 	url = https://github.com/richardc/puppet-datacat.git
+[submodule "sudo"]
+	path = sudo
+	url = https://github.com/saz/puppet-sudo.git
