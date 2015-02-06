@@ -31,3 +31,6 @@
 [submodule "augeasproviders_sysctl"]
 	path = augeasproviders_sysctl
 	url = https://github.com/hercules-team/augeasproviders_sysctl.git
+[submodule "augeasproviders_apache"]
+	path = augeasproviders_apache
+	url = https://github.com/hercules-team/augeasproviders_apache.git
