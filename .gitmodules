@@ -28,3 +28,6 @@
 [submodule "augeasproviders_shellvar"]
 	path = augeasproviders_shellvar
 	url = https://github.com/hercules-team/augeasproviders_shellvar.git
+[submodule "augeasproviders_sysctl"]
+	path = augeasproviders_sysctl
+	url = https://github.com/hercules-team/augeasproviders_sysctl.git
