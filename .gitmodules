@@ -22,3 +22,6 @@
 [submodule "augeasproviders_core"]
 	path = augeasproviders_core
 	url = https://github.com/hercules-team/augeasproviders_core.git
+[submodule "augeasproviders_ssh"]
+	path = augeasproviders_ssh
+	url = https://github.com/hercules-team/augeasproviders_ssh.git
