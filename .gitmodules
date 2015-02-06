@@ -34,3 +34,6 @@
 [submodule "augeasproviders_apache"]
 	path = augeasproviders_apache
 	url = https://github.com/hercules-team/augeasproviders_apache.git
+[submodule "augeasproviders_grub"]
+	path = augeasproviders_grub
+	url = https://github.com/hercules-team/augeasproviders_grub.git
