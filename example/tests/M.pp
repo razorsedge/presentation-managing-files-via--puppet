@@ -1,7 +1,11 @@
-ini_setting { 'testFileM#foo#bar':
+file { '/tmp/testFileM':
   ensure  => present,
-  path    => '/tmp/testFileM',
-  section => 'foo',
-  setting => 'bar',
-  value   => 'GIBBERISH',
+  mode    => '0644',
+  content => file('/etc/resolv.conf'),
+} ->
+file_line { 'testFileM#search':
+  ensure => present,
+  path   => '/tmp/testFileM',
+  line   => 'search localdomain',
+  match  => '^search .*',
 }

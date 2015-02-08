@@ -1,11 +1,9 @@
 file { '/tmp/testFileL':
-  ensure  => present,
-  mode    => '0644',
-  content => file('/etc/resolv.conf'),
+  ensure => present,
+  mode   => '0644',
 } ->
-file_line { 'testFileL#search':
+file_line { 'testFileL':
   ensure => present,
   path   => '/tmp/testFileL',
-  line   => 'search localdomain',
-  match  => '^search .*',
+  line   => 'This line shall be present.',
 }

@@ -1,9 +1,10 @@
 file { '/tmp/testFileK':
-  ensure => present,
-  mode   => '0644',
+  ensure  => present,
+  mode    => '0644',
+  content => file('/etc/sysconfig/firstboot'),
 } ->
-file_line { 'testFileK':
-  ensure => present,
-  path   => '/tmp/testFileK',
-  line   => 'This line shall be present.',
+augeas { 'testFileK' :
+  incl    => '/tmp/testFileK',
+  lens    => 'Shellvars.lns',
+  changes => 'set RUN_FIRSTBOOT YES',
 }
