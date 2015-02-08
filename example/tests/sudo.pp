@@ -1,5 +1,8 @@
+class { 'sudo':
+  config_file_replace => false,
+}
 sudo::conf { 'web':
-  source => 'puppet:///example/etc/sudoers.d/web',
+  source => 'puppet:///modules/example/etc/sudoers.d/web',
 }
 sudo::conf { 'admins':
   priority => 10,
@@ -7,5 +10,5 @@ sudo::conf { 'admins':
 }
 sudo::conf { 'joe':
   priority => 60,
-  source   => 'puppet:///example/etc/sudoers.d/users/joe',
+  source   => 'puppet:///modules/example/etc/sudoers.d/joe',
 }
