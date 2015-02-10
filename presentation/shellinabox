@@ -1,0 +1,8 @@
+shellinaboxd \
+   --localhost-only \
+   --background="`dirname $0`/shellinabox.pid" \
+   --service /:vagrant:vagrant:HOME:SHELL \
+   --no-beep \
+   --disable-ssl \
+   --css color.css \
+   --user-css Color:+/usr/share/shellinabox/color.css
