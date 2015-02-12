@@ -1,0 +1,3 @@
+#/bin/bash
+cd /vagrant/example
+nohup node /opt/wetty/app.js -p 3000 >/home/vagrant/nohup.wetty.out &

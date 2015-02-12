@@ -80,35 +80,36 @@ Vagrant.configure(2) do |config|
     service iprdump stop
     service iprinit stop
     service iprupdate stop
-    cp -p /vagrant/google-chrome.repo /etc/yum.repos.d/
-    yum -y -d1 -e1 install yum-presto deltarpm
-    #yum -y -d1 -e1 install firefox epel-release xorg-x11-xauth
-    yum -y -d1 -e1 install google-chrome-stable epel-release xorg-x11-xauth
+    #cp -p /vagrant/google-chrome.repo /etc/yum.repos.d/
+    cat <<EOF >/etc/yum.repos.d/google-chrome.repo
+[google-chrome]
+name=google-chrome
+baseurl=http://dl.google.com/linux/chrome/rpm/stable/\\\$basearch
+enabled=1
+gpgcheck=1
+gpgkey=https://dl-ssl.google.com/linux/linux_signing_key.pub
+EOF
+    yum -y -d1 -e1 install yum-presto deltarpm epel-release xorg-x11-xauth
+
+    yum -y -d1 -e1 install git nodejs npm shellinabox google-chrome-stable xorg-x11-xauth
+    git clone https://github.com/hakimel/reveal.js.git /opt/presentation
+    cd /opt/presentation
+    npm install --quiet -g grunt-cli
+    npm install --quiet
+    sed -i "s|port: port|port: port,\\n\\t\\t\\t\\t\\thostname: \'\'|g" /opt/presentation/Gruntfile.js
+    git clone https://github.com/krishnasrinivas/wetty /opt/wetty
+    cd /opt/wetty
+    npm install --quiet
+    sed -i -e '/ pty.spawn/s|ssh|/bin/bash|' -e '/ pty.spawn/s|\[ssh.*\],|\[\],|' /opt/wetty/app.js
+
+    /bin/cp -p /vagrant/presentation/* /opt/presentation/
     puppet config set basemodulepath /vagrant:/etc/puppet/modules:/usr/share/puppet/modules
     su - vagrant -c "puppet apply --noop /vagrant/example/tests/A.pp;puppet config set basemodulepath /vagrant:/home/vagrant/.puppet/modules:/usr/share/puppet/modules"
     echo vagrant | passwd --stdin vagrant
 
-    yum -y -d1 -e1 install git nodejs npm shellinabox
-    cd /opt
-    git clone https://github.com/hakimel/reveal.js.git presentation
-    cd /opt/presentation
-    npm install --quiet -g grunt-cli
-    npm install --quiet
-    sed -i "s|port: port|port: port,\n\t\t\t\t\thostname: \'\'|g" /opt/presentation/Gruntfile.js
-    git clone https://github.com/krishnasrinivas/wetty
-    cd /opt/presentation/wetty
-    npm install --quiet
-
-    #cp -p /opt/presentation/index.html /opt/presentation/default.html
-    #/bin/cp -a /vagrant/presentation/* /opt/presentation/
-    /bin/cp -p /vagrant/presentation/* /opt/presentation/
-
     #systemctl stop firewalld
     #firewall-cmd --zone=public --add-port=8000/tcp --permanent
     #firewall-cmd --reload
-    cd /opt/presentation
-    nohup grunt serve &
-    ./shellinabox
   SHELL
 
 #  config.vm.provision :puppet do |puppet|
