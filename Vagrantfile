@@ -96,11 +96,11 @@ EOF
     cd /opt/presentation
     npm install --quiet -g grunt-cli
     npm install --quiet
-    sed -i "s|port: port|port: port,\\n\\t\\t\\t\\t\\thostname: \'\'|g" /opt/presentation/Gruntfile.js
+    #sed -i "s|port: port|port: port,\\n\\t\\t\\t\\t\\thostname: \'\'|g" /opt/presentation/Gruntfile.js
     git clone https://github.com/krishnasrinivas/wetty /opt/wetty
     cd /opt/wetty
     npm install --quiet
-    sed -i -e '/ pty.spawn/s|ssh|/bin/bash|' -e '/ pty.spawn/s|\[ssh.*\],|\[\],|' /opt/wetty/app.js
+    sed -i -e '/ pty.spawn/s|ssh|/bin/bash|' -e '/ pty.spawn/s|\\[ssh.*\\],|\\[\\],|' /opt/wetty/app.js
 
     /bin/cp -p /vagrant/presentation/* /opt/presentation/
     puppet config set basemodulepath /vagrant:/etc/puppet/modules:/usr/share/puppet/modules
