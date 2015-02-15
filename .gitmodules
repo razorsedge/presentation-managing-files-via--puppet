@@ -16,3 +16,6 @@
 [submodule "modules/augeasproviders_ssh"]
 	path = modules/augeasproviders_ssh
 	url = https://github.com/hercules-team/augeasproviders_ssh.git
+[submodule "modules/augeasproviders_shellvar"]
+	path = modules/augeasproviders_shellvar
+	url = https://github.com/hercules-team/augeasproviders_shellvar.git
