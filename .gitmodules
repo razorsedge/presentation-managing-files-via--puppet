@@ -22,3 +22,6 @@
 [submodule "modules/augeasproviders_grub"]
 	path = modules/augeasproviders_grub
 	url = https://github.com/hercules-team/augeasproviders_grub.git
+[submodule "modules/augeasproviders_sysctl"]
+	path = modules/augeasproviders_sysctl
+	url = https://github.com/hercules-team/augeasproviders_sysctl.git
