@@ -80,6 +80,8 @@ Vagrant.configure(2) do |config|
     service iprdump stop
     service iprinit stop
     service iprupdate stop
+    service avahi-daemon stop
+    service postfix stop
     #cp -p /vagrant/google-chrome.repo /etc/yum.repos.d/
     cat <<EOF >/etc/yum.repos.d/google-chrome.repo
 [google-chrome]
