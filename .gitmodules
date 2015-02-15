@@ -1,3 +1,6 @@
 [submodule "modules/concat"]
 	path = modules/concat
 	url = https://github.com/puppetlabs/puppetlabs-concat.git
+[submodule "modules/datacat"]
+	path = modules/datacat
+	url = https://github.com/richardc/puppet-datacat.git
