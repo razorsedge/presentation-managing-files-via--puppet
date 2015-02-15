@@ -1,7 +1,7 @@
 shellinaboxd \
    --localhost-only \
    --background="`dirname $0`/shellinabox.pid" \
-   --service /:vagrant:vagrant:/vagrant/example:SHELL \
+   --service /:vagrant:vagrant:/vagrant/modules/example:SHELL \
    --static-file=beep.wav:/dev/null \
    --disable-ssl \
    --css white-on-black.css \

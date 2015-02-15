@@ -82,7 +82,6 @@ Vagrant.configure(2) do |config|
     service iprupdate stop
     service avahi-daemon stop
     service postfix stop
-    #cp -p /vagrant/google-chrome.repo /etc/yum.repos.d/
     cat <<EOF >/etc/yum.repos.d/google-chrome.repo
 [google-chrome]
 name=google-chrome
@@ -106,9 +105,9 @@ EOF
 
     /bin/cp -a /vagrant/presentation/* /opt/presentation/
     touch /etc/puppet/hiera.yaml
-    puppet config set basemodulepath /vagrant:/etc/puppet/modules:/usr/share/puppet/modules
+    puppet config set basemodulepath /vagrant/modules:/etc/puppet/modules:/usr/share/puppet/modules
     puppet config set disable_warnings deprecations
-    su - vagrant -c "puppet apply --noop /vagrant/example/tests/A.pp;puppet config set basemodulepath /vagrant:/home/vagrant/.puppet/modules:/usr/share/puppet/modules"
+    su - vagrant -c "puppet apply --noop /vagrant/modules/example/tests/A.pp;puppet config set basemodulepath /vagrant/modules:/home/vagrant/.puppet/modules:/usr/share/puppet/modules"
     echo vagrant | passwd --stdin vagrant
 
     #systemctl stop firewalld
