@@ -106,7 +106,7 @@
 
 				<section>
 					<h2>Basic File resource:</h2>
-					<pre><code data-trim>
+					<pre><code class="puppet" data-trim>
 file { '/tmp/testFile':
   ensure => present,
   mode   => '0644',
@@ -118,7 +118,7 @@ file { '/tmp/testFile':
 
 				<section>
 					<h2>With source attribute:</h2>
-					<pre><code data-trim>
+					<pre><code class="puppet" data-trim>
 file { '/tmp/testFileA':
   ensure => present,
   mode   => '0644',
@@ -130,7 +130,7 @@ file { '/tmp/testFileA':
 
 				<section>
 					<h2>With multiple source attributes:</h2>
-					<pre><code data-trim>
+					<pre><code class="puppet" data-trim>
 file { '/tmp/testFileB':
   ensure => present,
   mode   => '0644',
@@ -145,20 +145,20 @@ file { '/tmp/testFileB':
 
 				<section>
 					<h2>With content attribute:</h2>
-					<pre><code data-trim>
+					<pre><code class="puppet" data-trim>
 file { '/tmp/testFileC':
   ensure  => present,
   mode    => '0644',
   content => 'Some fancy string.',
 }
 					</code></pre>
-					<p>Note: no carriage return</p>
+					<p><small>Note: no carriage return</small></p>
 					<iframe width="875" height="300" scrolling="no" data-src="http://localhost:3000"></iframe>
 				</section>
 
 				<section>
 					<h2>With content attribute string variables:</h2>
-					<pre><code data-trim>
+					<pre><code class="puppet" data-trim>
 file { '/tmp/testFileD':
   ensure  => present,
   mode    => '0644',
@@ -172,7 +172,7 @@ is: ${::architecture}\n",
 
 				<section>
 					<h2>With content attribute template():</h2>
-					<pre><code data-trim>
+					<pre><code class="puppet" data-trim>
 $variableA = 'good'
 $variableB = 'horrible'
 file { '/tmp/testFileE':
@@ -181,7 +181,7 @@ file { '/tmp/testFileE':
   content => template('example/templateA.erb'),
 }
 					</code></pre>
-					<pre><code data-trim>
+					<pre><code class="ruby" data-trim>
 This is a <%= @variableA %> day.
 There will be a <%= @variableB %> calamity.
 					</code></pre>
@@ -190,7 +190,7 @@ There will be a <%= @variableB %> calamity.
 
 				<section>
 					<h2>With mutiple content attribute template()s:</h2>
-					<pre><code data-trim>
+					<pre><code class="puppet" data-trim>
 $variableA = 'good'
 $variableB = 'horrible'
 file { '/tmp/testFileF':
@@ -199,7 +199,7 @@ file { '/tmp/testFileF':
   content => template('example/templateA.erb','example/templateB.erb'),
 }
 					</code></pre>
-					<pre><code data-trim>
+					<pre><code class="ruby" data-trim>
 We are using <%= scope['::osfamily'] %> osfamily.
 					</code></pre>
 					<iframe width="875" height="250" scrolling="no" data-src="http://localhost:3000"></iframe>
@@ -207,7 +207,7 @@ We are using <%= scope['::osfamily'] %> osfamily.
 
 				<section>
 					<h2>With content attribute inline_template():</h2>
-					<pre><code data-trim>
+					<pre><code class="puppet" data-trim>
 $options = [ 'blue', 'heavy', 'yummy' ]
 $item = 'The sky is'
 file { '/tmp/testFileG':
@@ -221,7 +221,7 @@ file { '/tmp/testFileG':
 
 				<section>
 					<h2>With content attribute file():</h2>
-					<pre><code data-trim>
+					<pre><code class="puppet" data-trim>
 file { '/tmp/testFileH':
   ensure  => present,
   mode    => '0644',
@@ -233,7 +233,7 @@ file { '/tmp/testFileH':
 
 				<section>
 					<h2>With content attribute epp():</h2>
-					<pre><code data-trim>
+					<pre><code class="puppet" data-trim>
 $variableA = 'good'
 $variableB = 'horrible'
 file { '/tmp/testFileI':
@@ -246,7 +246,7 @@ file { '/tmp/testFileI':
 This is a <%= $variableA %> day.
 There will be a <%= $variableB %> calamity.
 					</code></pre>
-					<p>puppet apply --parser=future</p>
+					<p><small>puppet apply --parser=future</small></p>
 					<iframe width="875" height="300" scrolling="no" data-src="http://localhost:3000"></iframe>
 				</section>
 
@@ -258,7 +258,7 @@ There will be a <%= $variableB %> calamity.
 				<section>
 					<h2>concat</h2>
 					<p>The concat module constructs files from multiple fragments in an ordered way.</p>
-					<pre><code data-trim>
+					<pre><code class="puppet" data-trim>
 concat { '/tmp/testFileJ':
   ensure => present,
   mode   => '0644'
@@ -284,7 +284,7 @@ concat::fragment { 'testfileJ-02':
 				<section>
 					<h2>augeas</h2>
 					<p>Apply a change or an array of changes to the filesystem using the augeas tool.</p>
-					<pre><code data-trim>
+					<pre><code class="puppet" data-trim>
 file { '/tmp/testFileK':
   ensure  => present,
   mode    => '0644',
@@ -302,7 +302,7 @@ augeas { 'testFileK' :
 				<section>
 					<h2>file_line</h2>
 					<p>The file_line resource ensures that a given line, including whitespace at the beginning and end, is contained within a file. If the line is not present, Puppet will add the line. Multiple resources can be declared to manage multiple lines in the same file.</p>
-					<pre><code data-trim>
+					<pre><code class="puppet" data-trim>
 file { '/tmp/testFileL':
   ensure => present,
   mode   => '0644',
@@ -319,7 +319,7 @@ file_line { 'testFileL':
 				<section>
 					<h2>file_line with line replacement:</h2>
 					<p>You can also use <code>match</code> to replace existing lines.</p>
-					<pre><code data-trim>
+					<pre><code class="puppet" data-trim>
 file { '/tmp/testFileM':
   ensure  => present,
   mode    => '0644',
@@ -338,7 +338,7 @@ file_line { 'testFileM#search':
 				<section>
 					<h2>inifile</h2>
 					<p>The inifile module allows you to manage settings and subsettings in INI-style configuration files. This module tries hard not to manipulate your file any more than it needs to. In most cases, it should leave the original whitespace, comments, ordering, etc. intact.</p>
-					<pre><code data-trim>
+					<pre><code class="puppet" data-trim>
 ini_setting { 'testFileN#foo#bar':
   ensure  => present,
   path    => '/tmp/testFileN',
@@ -352,7 +352,7 @@ ini_setting { 'testFileN#foo#bar':
 
 				<section>
 					<h2>inifile adding to an existing section:</h2>
-					<pre><code data-trim>
+					<pre><code class="puppet" data-trim>
 file { '/tmp/testFileO':
   ensure  => present,
   mode    => '0644',
@@ -372,7 +372,7 @@ ini_setting { 'testFileO#foo#bar':
 				<section>
 					<h2>datacat</h2>
 					<p>The datacat module constructs a file by stitching line fragments together into the same line in one or multiple files.</p>
-					<pre><code data-trim>
+					<pre><code class="puppet" data-trim>
 datacat { '/tmp/testFileP':
   ensure   => present,
   mode     => '0644',
@@ -403,7 +403,7 @@ datacat_fragment { "${ilo_fqdn} in device hostgroup":
 
 				<section>
 					<h2>sudo</h2>
-					<pre><code data-trim>
+					<pre><code class="puppet" data-trim>
 class { 'sudo':
   purge               => false,
   config_file_replace => false,
@@ -425,7 +425,7 @@ sudo::conf { 'joe':
 
 				<section>
 					<h2>augeasproviders</h2>
-					<pre><code data-trim>
+					<pre><code class="puppet" data-trim>
 sshd_config { 'PermitRootLogin':
   ensure => present,
   value  => 'no',
@@ -437,7 +437,7 @@ sshd_config { 'PermitRootLogin':
 
 				<section>
 					<h2>augeasproviders</h2>
-					<pre><code data-trim>
+					<pre><code class="puppet" data-trim>
 kernel_parameter { 'elevator':
   ensure => present,
   value  => 'deadline',
@@ -449,7 +449,7 @@ kernel_parameter { 'elevator':
 
 				<section>
 					<h2>augeasproviders</h2>
-					<pre><code data-trim>
+					<pre><code class="puppet" data-trim>
 shellvar { 'HOSTNAME':
   ensure => present,
   target => '/etc/sysconfig/network',
@@ -462,7 +462,7 @@ shellvar { 'HOSTNAME':
 
 				<section>
 					<h2>augeasproviders</h2>
-					<pre><code data-trim>
+					<pre><code class="puppet" data-trim>
 sysctl { 'net.ipv4.ip_forward':
   ensure  => present,
   value   => '1',
@@ -475,7 +475,7 @@ sysctl { 'net.ipv4.ip_forward':
 
 				<section>
 					<h2>Apache vhost</h2>
-					<pre><code data-trim>
+					<pre><code class="puppet" data-trim>
 apache::vhost { 'first.example.com':
   port    => '80',
   docroot => '/var/www/first',
