@@ -4,9 +4,6 @@ echo "*** clearing tempfiles"
 sudo rm -f /tmp/test*
 echo "*** caching httpd"
 sudo yum -y -e1 -d1 install --downloadonly httpd
-echo "*** silencing puppet warnings"
-sudo touch /etc/puppet/hiera.yaml
-sudo puppet config set disable_warnings deprecations
 if [ -d /opt/wetty ]; then
   echo "*** starting wetty"
   #cd /opt/wetty

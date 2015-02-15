@@ -102,8 +102,10 @@ EOF
     npm install --quiet
     sed -i -e '/ pty.spawn/s|ssh|/bin/bash|' -e '/ pty.spawn/s|\\[ssh.*\\],|\\[\\],|' /opt/wetty/app.js
 
-    /bin/cp -p /vagrant/presentation/* /opt/presentation/
+    /bin/cp -a /vagrant/presentation/* /opt/presentation/
+    touch /etc/puppet/hiera.yaml
     puppet config set basemodulepath /vagrant:/etc/puppet/modules:/usr/share/puppet/modules
+    puppet config set disable_warnings deprecations
     su - vagrant -c "puppet apply --noop /vagrant/example/tests/A.pp;puppet config set basemodulepath /vagrant:/home/vagrant/.puppet/modules:/usr/share/puppet/modules"
     echo vagrant | passwd --stdin vagrant
 
