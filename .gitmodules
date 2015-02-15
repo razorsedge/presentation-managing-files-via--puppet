@@ -19,3 +19,6 @@
 [submodule "modules/augeasproviders_shellvar"]
 	path = modules/augeasproviders_shellvar
 	url = https://github.com/hercules-team/augeasproviders_shellvar.git
+[submodule "modules/augeasproviders_grub"]
+	path = modules/augeasproviders_grub
+	url = https://github.com/hercules-team/augeasproviders_grub.git
