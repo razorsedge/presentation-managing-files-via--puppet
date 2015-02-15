@@ -19,7 +19,11 @@
 		<link rel="stylesheet" href="css/theme/night.css" id="theme">
 
 		<!-- Code syntax highlighting -->
-		<link rel="stylesheet" href="lib/css/zenburn.css">
+		<!-- <link rel="stylesheet" href="lib/css/zenburn.css"> -->
+		<!-- <link rel="stylesheet" href="lib/css/obsidian.css"> -->
+		<!-- <link rel="stylesheet" href="lib/css/arta.css"> -->
+		<!-- <link rel="stylesheet" href="lib/css/sunburst.css"> -->
+		<link rel="stylesheet" href="lib/css/ir_black.css">
 
 		<!-- Printing and PDF exports -->
 		<script>
@@ -68,11 +72,6 @@
 				</section>
 
 				<section>
-					<h2>What Is This Topic?</h2>
-					<p>Configuration files abound. They are the primary way to get our systems to do the things we want them to do. Puppet has a number of ways for us to manage these files. From static, whole file control through template-based file deployment to separate, line-based configuration, Puppet can get the bits we need into the correct file with little trouble. In addition to managing the file, this talk will also cover patterns (APIs) that a module can follow to allow other modules to control the contents of it's configuration files.</p>
-				</section>
-
-				<section>
 					<h2>Who is Mike Arnold?</h2>
 					<ul>
 						<li>Unix Systems Administrator</li>
@@ -85,6 +84,20 @@
 						</ul>
 						</li>
 					</ul>
+				</section>
+
+				<section id="fragments">
+					<h2>What Is This Topic?</h2>
+					<ul>
+						<li>Puppet can manage files. <span class="fragment">(This may be obvious.)</span></li>
+						<ul>
+							<li class="fragment">entire files</li>
+							<li class="fragment">or just lines</li>
+							<li class="fragment">via static content</li>
+							<li class="fragment">or templates</li>
+						</ul>
+					</ul>
+					<p class="fragment">Lets see all the ways.</p>
 				</section>
 
 				<section>
@@ -343,7 +356,7 @@ ini_setting { 'testFileN#foo#bar':
 file { '/tmp/testFileO':
   ensure  => present,
   mode    => '0644',
-  content => file('/usr/lib64/firefox/platform.ini'),
+  content => file('/usr/share/perl5/vendor_perl/XML/SAX/ParserDetails.ini'),
 } ->
 ini_setting { 'testFileO#foo#bar':
   ensure  => present,
@@ -385,13 +398,14 @@ datacat_fragment { "${ilo_fqdn} in device hostgroup":
 				</section>
 
 				<section>
-					<h1>Patterns</h1>
+					<h1>Various Patterns</h1>
 				</section>
 
 				<section>
 					<h2>sudo</h2>
 					<pre><code data-trim>
 class { 'sudo':
+  purge               => false,
   config_file_replace => false,
 }
 sudo::conf { 'web':
@@ -414,10 +428,10 @@ sudo::conf { 'joe':
 					<pre><code data-trim>
 sshd_config { 'PermitRootLogin':
   ensure => present,
-  value  => 'yes',
+  value  => 'no',
 }
 					</code></pre>
-					<p>grep PermitRootLogin /etc/ssh/sshd_config</p>
+					<p><small>grep PermitRootLogin /etc/ssh/sshd_config</small></p>
 					<iframe width="875" height="300" scrolling="no" data-src="http://localhost:3000"></iframe>
 				</section>
 
@@ -429,7 +443,7 @@ kernel_parameter { 'elevator':
   value  => 'deadline',
 }
 					</code></pre>
-					<p>grep linux16 /boot/grub2/grub.cfg</p>
+					<p><small>grep linux16 /boot/grub2/grub.cfg</small></p>
 					<iframe width="875" height="300" scrolling="no" data-src="http://localhost:3000"></iframe>
 				</section>
 
@@ -442,7 +456,7 @@ shellvar { 'HOSTNAME':
   value  => 'host.example.com',
 }
 					</code></pre>
-					<p>cat /etc/sysconfig/network</p>
+					<p><small>cat /etc/sysconfig/network</small></p>
 					<iframe width="875" height="300" scrolling="no" data-src="http://localhost:3000"></iframe>
 				</section>
 
@@ -455,7 +469,7 @@ sysctl { 'net.ipv4.ip_forward':
   comment => 'This is a routing test.',
 }
 					</code></pre>
-					<p>sysctl net.ipv4.ip_forward</br>cat /etc/sysctl.conf</p>
+					<p><small>sysctl net.ipv4.ip_forward</br>cat /etc/sysctl.conf</small></p>
 					<iframe width="875" height="300" scrolling="no" data-src="http://localhost:3000"></iframe>
 				</section>
 
@@ -467,7 +481,7 @@ apache::vhost { 'first.example.com':
   docroot => '/var/www/first',
 }
 					</code></pre>
-					<p>cat /etc/httpd/conf.d/15*</p>
+					<p><small>cat /etc/httpd/conf.d/25*</small></p>
 					<iframe width="875" height="300" scrolling="no" data-src="http://localhost:3000"></iframe>
 				</section>
 
@@ -515,6 +529,7 @@ apache::vhost { 'first.example.com':
 						<li>https://github.com/razorsedge</li>
 						<li>https://forge.puppetlabs.com/razorsedge</li>
 					</ul>
+					<p>This presentation can be found at:</br>https://github.com/razorsedge/presentation-managing-files-via-puppet</p>
 				</section>
 			</div>
 		</div>
