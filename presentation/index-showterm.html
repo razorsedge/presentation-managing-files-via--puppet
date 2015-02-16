@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Managing Files via Puppet: Let Me Count The Ways</title>
+		<meta name="description" content="Configuration files abound. They are the primary way to get our systems to do the things we want them to do. Puppet has a number of ways for us to manage these files. From static, whole file control through template-based file deployment to separate, line-based configuration, Puppet can get the bits we need into the correct file with little trouble. In addition to managing the file, this talk will also cover patterns (APIs) that a module can follow to allow other modules to control the contents of it's configuration files.">
+		<meta name="author" content="Mike Arnold">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<!-- <link rel="stylesheet" href="css/theme/league.css" id="theme"> -->
+		<!-- <link rel="stylesheet" href="css/theme/white.css" id="theme"> -->
+		<link rel="stylesheet" href="css/theme/night.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<!-- <link rel="stylesheet" href="lib/css/zenburn.css"> -->
+		<!-- <link rel="stylesheet" href="lib/css/obsidian.css"> -->
+		<!-- <link rel="stylesheet" href="lib/css/arta.css"> -->
+		<!-- <link rel="stylesheet" href="lib/css/sunburst.css"> -->
+		<link rel="stylesheet" href="lib/css/ir_black.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+				<section>
+					<h1>Managing Files via Puppet</h1>
+					<h3>Let Me Count The Ways</h3>
+					<p>
+						<small>Mike Arnold (<a href="https://forge.puppetlabs.com/razorsedge/">razorsedge</a>)</small>
+						<br /><br />Puppet Camp Phoenix 2015
+					</p>
+				</section>
+
+				<section>
+					<h2>Agenda</h2>
+					<ul>
+						<li>Intro</li>
+						<li>Managing Files</li>
+						<li>Managing Lines</li>
+						<li>Various Patterns</li>
+						<li>Questions</li>
+						<li>Links</li>
+					</ul>
+				</section>
+
+				<section>
+					<h1>Intro</h1>
+				</section>
+
+				<section>
+					<h2>Who is Mike Arnold?</h2>
+					<ul>
+						<li>Unix Systems Administrator</li>
+						<li>Puppet Certified Professional</li>
+						<li>15 years in IT</li>
+						<li>Presently doing:</li>
+						<ul>
+							<li>Hadoop Infrastructure Engineering</li>
+							<li>Building Puppet modules</li>
+						</ul>
+						</li>
+					</ul>
+				</section>
+
+				<section id="fragments">
+					<h2>What Is This Topic?</h2>
+					<ul>
+						<li>Puppet can manage files. <span class="fragment">(This may be obvious.)</span></li>
+						<ul>
+							<li class="fragment">entire files</li>
+							<li class="fragment">or just lines</li>
+							<li class="fragment">via static content</li>
+							<li class="fragment">or templates</li>
+						</ul>
+					</ul>
+					<p class="fragment">Lets see all the ways.</p>
+				</section>
+
+				<section>
+					<h1>Managing Files</h1>
+				</section>
+
+				<section>
+					<h2>Basic File resource:</h2>
+					<pre><code class="puppet" data-trim>
+file { '/tmp/testFile':
+  ensure => present,
+  mode   => '0644',
+  owner  => 'root',
+  group  => 'root',
+}
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>With source attribute:</h2>
+					<pre><code class="puppet" data-trim>
+file { '/tmp/testFileA':
+  ensure => present,
+  mode   => '0644',
+  source => 'puppet:///modules/example/fileA',
+}
+					</code></pre>
+					<iframe width="865" height="300" style="border: 1px solid #444" scrolling="no" data-src="http://localhost:3001/4c0a41bc9af03c1018dfc"></iframe>
+				</section>
+
+				<section>
+					<h2>With multiple source attributes:</h2>
+					<pre><code class="puppet" data-trim>
+file { '/tmp/testFileB':
+  ensure => present,
+  mode   => '0644',
+  source => [
+    "puppet:///modules/example/fileB.${::operatingsystem}",
+    'puppet:///modules/example/fileB',
+  ],
+}
+					</code></pre>
+					<iframe width="865" height="300" style="border: 1px solid #444" scrolling="auto" data-src="http://localhost:3001/bd87f9454f09c59e2cfcb"></iframe>
+				</section>
+
+				<section>
+					<h2>With content attribute:</h2>
+					<pre><code class="puppet" data-trim>
+file { '/tmp/testFileC':
+  ensure  => present,
+  mode    => '0644',
+  content => 'Some fancy string.',
+}
+					</code></pre>
+					<p><small>Note: no carriage return</small></p>
+					<iframe width="865" height="300" style="border: 1px solid #444" scrolling="no" data-src="http://localhost:3001/f2c230eea375331261b30"></iframe>
+				</section>
+
+				<section>
+					<h2>With content attribute string variables:</h2>
+					<pre><code class="puppet" data-trim>
+file { '/tmp/testFileD':
+  ensure  => present,
+  mode    => '0644',
+  content => "Your operating system is: ${::operatingsystem}\
+${::operatingsystemrelease}\nYour CPU architecture\
+is: ${::architecture}\n",
+}
+					</code></pre>
+					<iframe width="865" height="300" style="border: 1px solid #444" scrolling="no" data-src="http://localhost:3001/64385d33f36a34a62b61d"></iframe>
+				</section>
+
+				<section>
+					<h2>With content attribute template():</h2>
+					<pre><code class="puppet" data-trim>
+$variableA = 'good'
+$variableB = 'horrible'
+file { '/tmp/testFileE':
+  ensure  => present,
+  mode    => '0644',
+  content => template('example/templateA.erb'),
+}
+					</code></pre>
+					<pre><code class="ruby" data-trim>
+This is a <%= @variableA %> day.
+There will be a <%= @variableB %> calamity.
+					</code></pre>
+					<iframe width="865" height="250" style="border: 1px solid #444" scrolling="no" data-src="http://localhost:3001/0198d34a8a11eb61be724"></iframe>
+				</section>
+
+				<section>
+					<h2>With mutiple content attribute template()s:</h2>
+					<pre><code class="puppet" data-trim>
+$variableA = 'good'
+$variableB = 'horrible'
+file { '/tmp/testFileF':
+  ensure  => present,
+  mode    => '0644',
+  content => template('example/templateA.erb','example/templateB.erb'),
+}
+					</code></pre>
+					<pre><code class="ruby" data-trim>
+We are using <%= scope['::osfamily'] %> osfamily.
+					</code></pre>
+					<iframe width="865" height="250" style="border: 1px solid #444" scrolling="no" data-src="http://localhost:3001/3eeabae4521c390e8cbe9"></iframe>
+				</section>
+
+				<section>
+					<h2>With content attribute inline_template():</h2>
+					<pre><code class="puppet" data-trim>
+$options = [ 'blue', 'heavy', 'yummy' ]
+$item = 'The sky is'
+file { '/tmp/testFileG':
+  ensure  => present,
+  mode    => '0644',
+  content => inline_template("${item}: <%= @options.join ' ' %>\n"),
+}
+					</code></pre>
+					<iframe width="865" height="300" style="border: 1px solid #444" scrolling="no" data-src="http://localhost:3001/6c8dcc24106e0c0c83883"></iframe>
+				</section>
+
+				<section>
+					<h2>With content attribute file():</h2>
+					<pre><code class="puppet" data-trim>
+file { '/tmp/testFileH':
+  ensure  => present,
+  mode    => '0644',
+  content => file('/etc/hosts'),
+}
+					</code></pre>
+					<iframe width="865" height="300" style="border: 1px solid #444" scrolling="no" data-src="http://localhost:3001/917d3d2736495225c2954"></iframe>
+				</section>
+
+				<section>
+					<h2>With content attribute epp():</h2>
+					<pre><code class="puppet" data-trim>
+$variableA = 'good'
+$variableB = 'horrible'
+file { '/tmp/testFileI':
+  ensure  => present,
+  mode    => '0644',
+  content => epp('example/templateA.epp'),
+}
+					</code></pre>
+					<pre><code data-trim>
+This is a <%= $variableA %> day.
+There will be a <%= $variableB %> calamity.
+					</code></pre>
+					<p><small>puppet apply --parser=future</small></p>
+					<iframe width="865" height="300" style="border: 1px solid #444" scrolling="no" data-src="http://localhost:3001/6df7ec7fe7f6e8201b74f"></iframe>
+				</section>
+
+				<section>
+					<h2>Difference between source and content?</h2>
+					<p>Unlike <code>content</code>, the <code>source</code> attribute can be used to recursively copy directories if the <code>recurse</code> attribute is set to <code>true</code> or <code>remote</code>.</p>
+				</section>
+
+				<section>
+					<h2>concat</h2>
+					<p>The concat module constructs files from multiple fragments in an ordered way.</p>
+					<pre><code class="puppet" data-trim>
+concat { '/tmp/testFileJ':
+  ensure => present,
+  mode   => '0644'
+}
+concat::fragment { 'testfileJ-01':
+  target  => '/tmp/testFileJ',
+  content => "This is a concat line 01.\n",
+  order   => '01',
+}
+concat::fragment { 'testfileJ-02':
+  target => '/tmp/testFileJ',
+  source => 'puppet:///modules/example/fileA',
+  order  => '02',
+}
+					</code></pre>
+					<iframe width="865" height="200" style="border: 1px solid #444" scrolling="auto" data-src="http://localhost:3001/6301fc1aacc5daffe7030"></iframe>
+				</section>
+
+				<section>
+					<h1>Managing Lines</h1>
+				</section>
+
+				<section>
+					<h2>augeas</h2>
+					<p>Apply a change or an array of changes to the filesystem using the augeas tool.</p>
+					<pre><code class="puppet" data-trim>
+file { '/tmp/testFileK':
+  ensure  => present,
+  mode    => '0644',
+  content => file('/etc/resolv.conf'),
+} ->
+augeas { 'testFileK' :
+  incl    => '/tmp/testFileK',		# only needed for this demo
+  lens    => 'Resolv.lns',		# only needed for this demo
+  changes => 'set domain example.net',
+}
+					</code></pre>
+					<iframe width="865" height="250" style="border: 1px solid #444" scrolling="auto" data-src="http://localhost:3001/c8237095a523360c9e87a"></iframe>
+				</section>
+
+				<section>
+					<h2>file_line</h2>
+					<p>The file_line resource ensures that a given line, including whitespace at the beginning and end, is contained within a file. If the line is not present, Puppet will add the line. Multiple resources can be declared to manage multiple lines in the same file.</p>
+					<pre><code class="puppet" data-trim>
+file { '/tmp/testFileL':
+  ensure => present,
+  mode   => '0644',
+} ->
+file_line { 'testFileL':
+  ensure => present,
+  path   => '/tmp/testFileL',
+  line   => 'This line shall be present.',
+}
+					</code></pre>
+					<iframe width="865" height="200" style="border: 1px solid #444" scrolling="no" data-src="http://localhost:3001/80a954c3b4b1c5032af87"></iframe>
+				</section>
+
+				<section>
+					<h2>file_line with line replacement:</h2>
+					<p>You can also use <code>match</code> to replace existing lines.</p>
+					<pre><code class="puppet" data-trim>
+file { '/tmp/testFileM':
+  ensure  => present,
+  mode    => '0644',
+  content => file('/etc/resolv.conf'),
+} ->
+file_line { 'testFileM#search':
+  ensure => present,
+  path   => '/tmp/testFileM',
+  line   => 'search localdomain',
+  match  => '^search .*',
+}
+					</code></pre>
+					<iframe width="865" height="250" style="border: 1px solid #444" scrolling="no" data-src="http://localhost:3001/4008713a3cc0fcefcd6b6"></iframe>
+				</section>
+
+				<section>
+					<h2>inifile</h2>
+					<p>The inifile module allows you to manage settings and subsettings in INI-style configuration files. This module tries hard not to manipulate your file any more than it needs to. In most cases, it should leave the original whitespace, comments, ordering, etc. intact.</p>
+					<pre><code class="puppet" data-trim>
+ini_setting { 'testFileN#foo#bar':
+  ensure  => present,
+  path    => '/tmp/testFileN',
+  section => 'foo',
+  setting => 'bar',
+  value   => 'GIBBERISH',
+}
+					</code></pre>
+					<iframe width="865" height="200" style="border: 1px solid #444" scrolling="no" data-src="http://localhost:3001/32aae15fd3f98eb759d72"></iframe>
+				</section>
+
+				<section>
+					<h2>inifile adding to an existing section:</h2>
+					<pre><code class="puppet" data-trim>
+file { '/tmp/testFileO':
+  ensure  => present,
+  mode    => '0644',
+  content => file('/usr/share/perl5/vendor_perl/XML/SAX/ParserDetails.ini'),
+} ->
+ini_setting { 'testFileO#foo#bar':
+  ensure  => present,
+  path    => '/tmp/testFileO',
+  section => 'Build',
+  setting => 'testN',
+  value   => 'WeDidIt',
+}
+					</code></pre>
+					<iframe width="865" height="250" style="border: 1px solid #444" scrolling="auto" data-src="http://localhost:3001/65a1161df7a66d25bfe11"></iframe>
+				</section>
+
+				<section>
+					<h2>datacat</h2>
+					<p>The datacat module constructs a file by stitching line fragments together into the same line in one or multiple files.</p>
+					<pre><code class="puppet" data-trim>
+datacat { '/tmp/testFileP':
+  ensure   => present,  mode => '0644',
+  template => 'example/templateP.erb',
+}
+datacat_fragment { "${::fqdn} in device hostgroup":
+  target => '/tmp/testFileP',
+  data   => { myhostgroup => [ $::fqdn ], },
+  order  => '01',
+}
+$ilo_fqdn = regsubst($::fqdn, '\.', '-ilo.')
+datacat_fragment { "${ilo_fqdn} in device hostgroup":
+  target => '/tmp/testFileP',
+  data   => { myhostgroup => [ $ilo_fqdn ], },
+  order  => '02',
+}
+					</code></pre>
+					<iframe width="865" height="175" style="border: 1px solid #444" scrolling="auto" data-src="http://localhost:3001/ba92da64f3088d2a23ae8"></iframe>
+				</section>
+
+				<section>
+					<p>The File and Concat resource can make backups of the file being modified into the Puppet filebucket. File_line, inifile, etc do not.</p>
+				</section>
+
+				<section>
+					<h1>Various Patterns</h1>
+				</section>
+
+				<section>
+					<h2>sudo</h2>
+					<pre><code class="puppet" data-trim>
+class { 'sudo':				# only needed for this demo
+  purge               => false,		# only needed for this demo
+  config_file_replace => false,		# only needed for this demo
+}					# only needed for this demo
+sudo::conf { 'web':
+  source => 'puppet:///modules/example/etc/sudoers.d/web',
+}
+sudo::conf { 'admins':
+  priority => 10,
+  content  => "%admins ALL=(ALL) NOPASSWD: ALL",
+}
+sudo::conf { 'joe':
+  priority => 60,
+  source   => 'puppet:///modules/example/etc/sudoers.d/joe',
+}
+					</code></pre>
+					<iframe width="865" height="250" style="border: 1px solid #444" scrolling="auto" data-src="http://localhost:3001/32cab55fd491edcc416fe"></iframe>
+				</section>
+
+				<section>
+					<h2>augeasproviders</h2>
+					<pre><code class="puppet" data-trim>
+sshd_config { 'PermitRootLogin':
+  ensure => present,
+  value  => 'no',
+}
+					</code></pre>
+					<p><small>grep PermitRootLogin /etc/ssh/sshd_config</small></p>
+					<iframe width="865" height="300" style="border: 1px solid #444" scrolling="no" data-src="http://localhost:3001/e983f390855f8f6601a55"></iframe>
+				</section>
+
+				<section>
+					<h2>augeasproviders</h2>
+					<pre><code class="puppet" data-trim>
+kernel_parameter { 'elevator':
+  ensure => present,
+  value  => 'deadline',
+}
+					</code></pre>
+					<p><small>grep linux16 /boot/grub2/grub.cfg</small></p>
+					<iframe width="865" height="300" style="border: 1px solid #444" scrolling="auto" data-src="http://localhost:3001/e24ba93e11e2ed7aef225"></iframe>
+				</section>
+
+				<section>
+					<h2>augeasproviders</h2>
+					<pre><code class="puppet" data-trim>
+shellvar { 'HOSTNAME':
+  ensure => present,
+  target => '/etc/sysconfig/network',
+  value  => 'host.example.com',
+}
+					</code></pre>
+					<p><small>cat /etc/sysconfig/network</small></p>
+					<iframe width="865" height="300" style="border: 1px solid #444" scrolling="no" data-src="http://localhost:3001/b17179ce559ac6e1ab739"></iframe>
+				</section>
+
+				<section>
+					<h2>augeasproviders</h2>
+					<pre><code class="puppet" data-trim>
+sysctl { 'net.ipv4.ip_forward':
+  ensure  => present,
+  value   => '1',
+  comment => 'This is a routing test.',
+}
+					</code></pre>
+					<p><small>sysctl net.ipv4.ip_forward<br />cat /etc/sysctl.conf</small></p>
+					<iframe width="865" height="300" style="border: 1px solid #444" scrolling="auto" data-src="http://localhost:3001/d9c617880edf7c7b72c4d"></iframe>
+				</section>
+
+				<section>
+					<h2>Apache vhost</h2>
+					<pre><code class="puppet" data-trim>
+apache::vhost { 'first.example.com':
+  port    => '80',
+  docroot => '/var/www/first',
+}
+					</code></pre>
+					<p><small>cat /etc/httpd/conf.d/25-first.example.com.conf</small></p>
+					<iframe width="865" height="300" style="border: 1px solid #444" scrolling="auto" data-src="http://localhost:3001/581c32d300d93e28f927a"></iframe>
+				</section>
+
+				<section>
+					<h1>Questions?</h1>
+				</section>
+
+				<section>
+					<h1>Links</h1>
+					<ul>
+						<li>https://docs.puppetlabs.com/references/latest/type.html#file-attribute-content</li>
+						<li>https://docs.puppetlabs.com/references/latest/type.html#file-attribute-source</li>
+						<li>https://docs.puppetlabs.com/references/latest/function.html#template</li>
+						<li>https://docs.puppetlabs.com/references/latest/function.html#file</li>
+						<li>https://docs.puppetlabs.com/references/latest/function.html#epp</li>
+						<li>https://forge.puppetlabs.com/puppetlabs/concat</li>
+					</ul>
+				</section>
+
+				<section>
+					<h1>Links</h1>
+					<ul>
+						<li>https://docs.puppetlabs.com/references/latest/type.html#augeas</li>
+						<li>https://puppetlabs.com/blog/module-of-the-week-puppetlabsstdlib-puppet-labs-standard-library</li>
+						<li>https://forge.puppetlabs.com/puppetlabs/stdlib</li>
+						<li>https://forge.puppetlabs.com/puppetlabs/inifile</li>
+						<li>https://forge.puppetlabs.com/richardc/datacat</li>
+					</ul>
+				</section>
+
+				<section>
+					<h1>Links</h1>
+					<ul>
+						<li>https://forge.puppetlabs.com/saz/sudo</li>
+						<li>https://forge.puppetlabs.com/herculesteam/augeasproviders</li>
+						<li>https://forge.puppetlabs.com/puppetlabs/apache</li>
+					</ul>
+				</section>
+
+				<section>
+					<h1>Contact</h1>
+					<ul>
+						<li>puppet@razorsedge.org</li>
+						<li>https://intelligentsysadmin.wordpress.com/</li>
+						<li>https://github.com/razorsedge</li>
+						<li>https://forge.puppetlabs.com/razorsedge</li>
+					</ul>
+					<p>This presentation can be found at:<br />https://github.com/razorsedge/presentation-managing-files-via-puppet</p>
+					<img data-src="qrcode.27670216.png" />
+				</section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: true,
+				history: true,
+				center: true,
+				slideNumber: true,
+				viewDistance: 1,
+				transition: 'none', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

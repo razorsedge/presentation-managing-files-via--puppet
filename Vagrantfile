@@ -23,7 +23,7 @@ Vagrant.configure(2) do |config|
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
   # config.vm.network "forwarded_port", guest: 80, host: 8080
-  config.vm.network "forwarded_port", guest: 8000, host: 8000
+#  config.vm.network "forwarded_port", guest: 8000, host: 8000
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
@@ -83,14 +83,14 @@ Vagrant.configure(2) do |config|
     service iprupdate stop
     service avahi-daemon stop
     service postfix stop
-    cat <<EOF >/etc/yum.repos.d/google-chrome.repo
+    cat <<EOF1 >/etc/yum.repos.d/google-chrome.repo
 [google-chrome]
 name=google-chrome
 baseurl=http://dl.google.com/linux/chrome/rpm/stable/\\\$basearch
 enabled=1
 gpgcheck=1
 gpgkey=https://dl-ssl.google.com/linux/linux_signing_key.pub
-EOF
+EOF1
     yum -y -d1 -e1 install yum-presto deltarpm epel-release xorg-x11-xauth
 
     yum -y -d1 -e1 install git nodejs npm shellinabox google-chrome-stable xorg-x11-xauth
@@ -104,21 +104,51 @@ EOF
     npm install --quiet
     sed -i -e '/ pty.spawn/s|ssh|/bin/bash|' -e '/ pty.spawn/s|\\[ssh.*\\],|\\[\\],|' /opt/wetty/app.js
 
+    yum -y -d1 -e1 install git nodejs rubygem-bundler ruby-devel sqlite-devel
+    git clone https://github.com/ConradIrwin/showterm.io.git /opt/showterm
+    cd /opt/showterm
+    sed -i -e '/^ruby/ s|2.1.1|2.0.0|' -e "s|gem 'pg'|gem 'sqlite3'|" /opt/showterm/Gemfile
+    bundle install --path=/opt/showterm
+    cat <<EOF2 >/opt/showterm/config/database.yml
+production:
+  adapter: sqlite3
+  database: /opt/showterm/db/showterm.sqlite3
+  pool: 5
+  timeout: 5000
+development:
+  adapter: sqlite3
+  database: /opt/showterm/db/showterm.sqlite3
+  pool: 5
+  timeout: 5000
+EOF2
+    if [ -f /vagrant/presentation/showterm.sqlite3 ]; then
+      cp -p /vagrant/presentation/showterm.sqlite3 /opt/showterm/db/showterm.sqlite3
+    else
+      bundle exec rake db:create db:migrate db:seed
+    fi
+    nohup bin/rails server --port=3001 >/nohup.rails.out &
+    sed -i -e '/^div.terminal/a\
+    zoom: 150%;' /opt/showterm/app/assets/stylesheets/scripts.css.scss
+#    cat <<EOF4 >/opt/showterm/app/assets/stylesheets/scripts.css.scss
+#html { zoom: 150%; }
+#EOF4
+
+    gem install showterm
+    cat <<EOF3 >/etc/profile.d/showterm.sh
+export SHOWTERM_SERVER=http://localhost:3001/
+EOF3
+    chmod +x /etc/profile.d/showterm.sh
+
     /bin/cp -a /vagrant/presentation/* /opt/presentation/
     touch /etc/puppet/hiera.yaml
-    puppet config set basemodulepath /vagrant/modules:/etc/puppet/modules:/usr/share/puppet/modules
+#    puppet config set basemodulepath /vagrant/modules:/etc/puppet/modules:/usr/share/puppet/modules
     puppet config set disable_warnings deprecations
-    su - vagrant -c "puppet apply --noop /vagrant/modules/example/tests/A.pp;puppet config set basemodulepath /vagrant/modules:/home/vagrant/.puppet/modules:/usr/share/puppet/modules"
+#    su - vagrant -c "puppet apply --noop /vagrant/modules/example/tests/A.pp;puppet config set basemodulepath /vagrant/modules:/home/vagrant/.puppet/modules:/usr/share/puppet/modules"
+    su - vagrant -c "puppet apply --noop /vagrant/modules/example/tests/A.pp;puppet config set basemodulepath /home/vagrant/.puppet/modules:/etc/puppet/modules:/usr/share/puppet/modules"
     echo vagrant | passwd --stdin vagrant
 
     #systemctl stop firewalld
     #firewall-cmd --zone=public --add-port=8000/tcp --permanent
     #firewall-cmd --reload
   SHELL
-
-#  config.vm.provision :puppet do |puppet|
-#    puppet.manifests_path = "manifests"
-#    puppet.manifest_file  = "default.pp"
-#    puppet.module_path = "modules"
-#  end
 end
