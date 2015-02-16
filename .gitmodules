@@ -25,3 +25,6 @@
 [submodule "modules/augeasproviders_sysctl"]
 	path = modules/augeasproviders_sysctl
 	url = https://github.com/hercules-team/augeasproviders_sysctl.git
+[submodule "modules/stdlib"]
+	path = modules/stdlib
+	url = https://github.com/puppetlabs/puppetlabs-stdlib.git
