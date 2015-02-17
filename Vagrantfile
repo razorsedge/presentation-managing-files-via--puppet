@@ -129,9 +129,6 @@ EOF2
     nohup bin/rails server --port=3001 >/nohup.rails.out &
     sed -i -e '/^div.terminal/a\
     zoom: 150%;' /opt/showterm/app/assets/stylesheets/scripts.css.scss
-#    cat <<EOF4 >/opt/showterm/app/assets/stylesheets/scripts.css.scss
-#html { zoom: 150%; }
-#EOF4
 
     gem install showterm
     cat <<EOF3 >/etc/profile.d/showterm.sh
@@ -149,6 +146,8 @@ EOF3
 
     #systemctl stop firewalld
     #firewall-cmd --zone=public --add-port=8000/tcp --permanent
+    #firewall-cmd --zone=public --add-port=3000/tcp --permanent
+    #firewall-cmd --zone=public --add-port=3001/tcp --permanent
     #firewall-cmd --reload
   SHELL
 end
