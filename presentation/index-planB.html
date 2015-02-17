@@ -51,7 +51,7 @@
 					<h3>Let Me Count The Ways</h3>
 					<p>
 						<small>Mike Arnold (<a href="https://forge.puppetlabs.com/razorsedge/">razorsedge</a>)</small>
-						</br></br>Puppet Camp Phoenix 2015
+						<br /><br />Puppet Camp Phoenix 2015
 					</p>
 				</section>
 
@@ -281,8 +281,8 @@ file { '/tmp/testFileK':
   content => file('/etc/resolv.conf'),
 } ->
 augeas { 'testFileK' :
-  incl    => '/tmp/testFileK',
-  lens    => 'Resolv.lns',
+  incl    => '/tmp/testFileK',		# only needed for this demo
+  lens    => 'Resolv.lns',		# only needed for this demo
   changes => 'set domain example.net',
 }
 					</code></pre>
@@ -359,8 +359,7 @@ ini_setting { 'testFileO#foo#bar':
 					<p>The datacat module constructs a file by stitching line fragments together into the same line in one or multiple files.</p>
 					<pre><code class="puppet" data-trim>
 datacat { '/tmp/testFileP':
-  ensure   => present,
-  mode     => '0644',
+  ensure   => present,  mode => '0644',
   template => 'example/templateP.erb',
 }
 datacat_fragment { "${::fqdn} in device hostgroup":
@@ -388,10 +387,10 @@ datacat_fragment { "${ilo_fqdn} in device hostgroup":
 				<section>
 					<h2>sudo</h2>
 					<pre><code class="puppet" data-trim>
-class { 'sudo':
-  purge               => false,
-  config_file_replace => false,
-}
+class { 'sudo':				# only needed for this demo
+  purge               => false,		# only needed for this demo
+  config_file_replace => false,		# only needed for this demo
+}					# only needed for this demo
 sudo::conf { 'web':
   source => 'puppet:///modules/example/etc/sudoers.d/web',
 }
@@ -449,7 +448,7 @@ sysctl { 'net.ipv4.ip_forward':
   comment => 'This is a routing test.',
 }
 					</code></pre>
-					<p><small>sysctl net.ipv4.ip_forward</br>cat /etc/sysctl.conf</small></p>
+					<p><small>sysctl net.ipv4.ip_forward<br />cat /etc/sysctl.conf</small></p>
 				</section>
 
 				<section>
@@ -460,7 +459,7 @@ apache::vhost { 'first.example.com':
   docroot => '/var/www/first',
 }
 					</code></pre>
-					<p><small>cat /etc/httpd/conf.d/25*</small></p>
+					<p><small>cat /etc/httpd/conf.d/25-first.example.com.conf</small></p>
 				</section>
 
 				<section>
@@ -502,12 +501,13 @@ apache::vhost { 'first.example.com':
 				<section>
 					<h1>Contact</h1>
 					<ul>
-						<li>puppet@razorsedge.org</li>
-						<li>https://intelligentsysadmin.wordpress.com/</li>
-						<li>https://github.com/razorsedge</li>
-						<li>https://forge.puppetlabs.com/razorsedge</li>
+						<li>Mike Arnold &lt;puppet@razorsedge.org&gt;</li>
+						<li><a href="https://intelligentsysadmin.wordpress.com/">https://intelligentsysadmin.wordpress.com/</a></li>
+						<li><a href="https://github.com/razorsedge">https://github.com/razorsedge</a></li>
+						<li><a href="https://forge.puppetlabs.com/razorsedge/">https://forge.puppetlabs.com/razorsedge</a></li>
 					</ul>
-					<p>This presentation can be found at:</br>https://github.com/razorsedge/presentation-managing-files-via-puppet</p>
+					<p>This presentation sourcecode can be found at:<br /><a href="https://github.com/razorsedge/presentation-managing-files-via-puppet"><small>https://github.com/razorsedge/presentation-managing-files-via-puppet</small></a></p>
+					<img data-src="qrcode.27677465.png" />
 				</section>
 			</div>
 		</div>
@@ -522,10 +522,10 @@ apache::vhost { 'first.example.com':
 			Reveal.initialize({
 				controls: false,
 				progress: true,
-				history: false,
+				history: true,
 				center: true,
 				slideNumber: true,
-				viewDistance: 2,
+				viewDistance: 1,
 				transition: 'none', // none/fade/slide/convex/concave/zoom
 
 				// Optional reveal.js plugins
